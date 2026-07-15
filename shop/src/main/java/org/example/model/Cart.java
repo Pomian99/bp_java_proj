@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * A customer's in-progress selection of products, held in memory until
+ * checkout() turns it into an Order.
+ */
 public class Cart {
     private final List<OrderItem> items = new ArrayList<>();
 
@@ -14,7 +18,7 @@ public class Cart {
         for (int i = 0; i < items.size(); i++) {
             OrderItem existing = items.get(i);
             if (existing.equals(newItem)) {
-                items.set(i, existing.withQuantity(existing.getQuantity() + quantity));
+                items.set(i, existing.withQuantity(existing.quantity() + quantity));
                 return;
             }
         }
@@ -22,7 +26,7 @@ public class Cart {
     }
 
     public void removeProduct(String productId) {
-        items.removeIf(item -> item.getProduct().getId().equals(productId));
+        items.removeIf(item -> item.product().getId().equals(productId));
     }
 
     public void updateQuantity(String productId, int newQuantity) {
@@ -33,7 +37,7 @@ public class Cart {
 
         for (int i = 0; i < items.size(); i++) {
             OrderItem item = items.get(i);
-            if (item.getProduct().getId().equals(productId)) {
+            if (item.product().getId().equals(productId)) {
                 items.set(i, item.withQuantity(newQuantity));
                 return;
             }

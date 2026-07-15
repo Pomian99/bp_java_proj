@@ -1,18 +1,22 @@
 package org.example.model;
 
-import lombok.Getter;
 import org.example.model.enums.ConfigType;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Getter
-public class OrderItem {
-    private final Product product;
-    private final List<Configuration> selectedConfigurations;
-    private final int quantity;
+/**
+ * A single line in an Order (or Cart): a product, the configurations chosen
+ * for it, and the ordered quantity.
+ */
+public record OrderItem(Product product, List<Configuration> selectedConfigurations,
+                        int quantity) implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public OrderItem(Product product, List<Configuration> selectedConfigurations, int quantity) {
         if (product == null) {
@@ -74,11 +78,11 @@ public class OrderItem {
             return false;
         }
         return product.getId().equals(other.product.getId())
-                && new java.util.HashSet<>(selectedConfigurations).equals(new java.util.HashSet<>(other.selectedConfigurations));
+                && new HashSet<>(selectedConfigurations).equals(new HashSet<>(other.selectedConfigurations));
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(product.getId(), new java.util.HashSet<>(selectedConfigurations));
+        return Objects.hash(product.getId(), new HashSet<>(selectedConfigurations));
     }
 }

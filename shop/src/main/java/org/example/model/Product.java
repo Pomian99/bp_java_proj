@@ -6,12 +6,18 @@ import lombok.Setter;
 import lombok.ToString;
 import org.example.model.enums.ProductType;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * A sellable item: id, type, name, price, available stock and the
+ * configuration options (if any) that can be picked when ordering it.
+ */
 @Getter @Setter @AllArgsConstructor @ToString
-public class Product {
+public class Product implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final AtomicLong ID_COUNTER = new AtomicLong(1);
 
     private final String id;

@@ -1,20 +1,19 @@
 package org.example.model;
 
-import lombok.Getter;
-
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Getter
-public class Order {
+/**
+ * A finalized, immutable purchase: customer, ordered items and the moment it
+ * was placed. Created via Cart.checkout(), then handed to OrderProcessor.
+ */
+public record Order(String id, Customer customer, List<OrderItem> items,
+                    LocalDateTime orderDate) implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final AtomicLong ID_COUNTER = new AtomicLong(1);
-
-    private final String id;
-    private final Customer customer;
-    private final List<OrderItem> items;
-    private final LocalDateTime orderDate;
 
     public Order(Customer customer, List<OrderItem> items) {
         this(generateId(), customer, items, LocalDateTime.now());
@@ -41,6 +40,22 @@ public class Order {
         return items.stream()
                 .map(OrderItem::getLineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public static void seedIdCounterFrom(List<Order> existingOrders) {
+        long maxSeen = existingOrders.stream()
+                .mapToLong(order -> parseSequenceNumber(order.id()))
+                .max()
+                .orElse(0);
+        ID_COUNTER.updateAndGet(current -> Math.max(current, maxSeen + 1));
+    }
+
+    private static long parseSequenceNumber(String id) {
+        try {
+            return Long.parseLong(id.substring(id.lastIndexOf('-') + 1));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     private static String generateId() {

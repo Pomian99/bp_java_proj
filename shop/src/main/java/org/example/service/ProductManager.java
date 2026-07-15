@@ -2,12 +2,19 @@ package org.example.service;
 
 import lombok.Getter;
 import org.example.model.Product;
+import org.example.persistence.ProductRepository;
 
 import java.util.*;
 
-@Getter
 public class ProductManager {
+    @Getter
     private final List<Product> products = new ArrayList<>();
+    private final ProductRepository repository;
+
+    public ProductManager(ProductRepository repository) {
+        this.repository = repository;
+        products.addAll(repository.load());
+    }
 
     public void addProduct(Product product) {
         Objects.requireNonNull(product, "Product cannot be null");
@@ -17,6 +24,7 @@ public class ProductManager {
         }
 
         products.add(product);
+        persist();
     }
 
     public Optional<Product> getProductById(String id) {
@@ -30,6 +38,7 @@ public class ProductManager {
                 .orElseThrow(() -> new IllegalArgumentException("Product with id " + id + " does not exist"));
 
         products.remove(removed);
+        persist();
     }
 
     public void updateProduct(Product product) {
@@ -41,5 +50,10 @@ public class ProductManager {
                 .orElseThrow(() -> new IllegalArgumentException("Product with id " + product.getId() + " does not exist"));
         products.remove(updated);
         products.add(product);
+        persist();
+    }
+
+    public void persist() {
+        repository.save(products);
     }
 }
