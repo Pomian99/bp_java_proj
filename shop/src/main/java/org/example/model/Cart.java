@@ -3,106 +3,72 @@ package org.example.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 public class Cart {
-    private final List<CartItem> items = new ArrayList<>();
+    private final List<OrderItem> items = new ArrayList<>();
 
-    public void addProduct(Product product, List<Configuration> productConfiguration, int quantity) {
-        Objects.requireNonNull(product, "Product cannot be null");
+    public void addProduct(Product product, List<Configuration> configurations, int quantity) {
+        OrderItem newItem = new OrderItem(product, configurations, quantity);
 
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
+        for (int i = 0; i < items.size(); i++) {
+            OrderItem existing = items.get(i);
+            if (existing.equals(newItem)) {
+                items.set(i, existing.withQuantity(existing.getQuantity() + quantity));
+                return;
+            }
         }
-
-        Optional<CartItem> existingItem = findItemByProductId(product.getId());
-        int requestedQuantity = quantity + existingItem
-                .map(CartItem::getQuantity)
-                .orElse(0);
-
-        validateAvailableQuantity(product, requestedQuantity);
-
-        if (existingItem.isPresent()) {
-            existingItem.get().increaseQuantity(quantity);
-        } else {
-            items.add(new CartItem(product, List.of(), quantity));
-        }
+        items.add(newItem);
     }
 
     public void removeProduct(String productId) {
-        boolean removed = items.removeIf(item -> item.getProduct().getId().equals(productId));
+        items.removeIf(item -> item.getProduct().getId().equals(productId));
+    }
 
-        if (!removed) {
-            throw new IllegalArgumentException("Product with id " + productId + " is not in the cart");
+    public void updateQuantity(String productId, int newQuantity) {
+        if (newQuantity <= 0) {
+            removeProduct(productId);
+            return;
         }
+
+        for (int i = 0; i < items.size(); i++) {
+            OrderItem item = items.get(i);
+            if (item.getProduct().getId().equals(productId)) {
+                items.set(i, item.withQuantity(newQuantity));
+                return;
+            }
+        }
+        throw new NoSuchElementException("No cart item for product id: " + productId);
     }
 
-    public void changeProductQuantity(String productId, int quantity) {
-        CartItem item = findItemByProductId(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product with id " + productId + " is not in the cart"));
-
-        validateAvailableQuantity(item.getProduct(), quantity);
-        item.changeQuantity(quantity);
-    }
-
-    public List<CartItem> getItems() {
+    public List<OrderItem> viewCart() {
         return List.copyOf(items);
+    }
+
+    public BigDecimal getTotal() {
+        return items.stream()
+                .map(OrderItem::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public boolean isEmpty() {
         return items.isEmpty();
     }
 
-    public int getTotalQuantity() {
-        return items.stream()
-                .mapToInt(CartItem::getQuantity)
-                .sum();
-    }
-
-    public BigDecimal getTotalPrice() {
-        return items.stream()
-                .map(CartItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public BigDecimal checkout() {
-        if (isEmpty()) {
-            throw new IllegalStateException("Cannot checkout an empty cart");
-        }
-
-        BigDecimal totalPrice = getTotalPrice();
-        clear();
-        return totalPrice;
-    }
-
     public void clear() {
         items.clear();
     }
 
-    private Optional<CartItem> findItemByProductId(String productId) {
-        return items.stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst();
+    public Order checkout(Customer customer) {
+        requireNonEmpty();
+        Order order = new Order(customer, List.copyOf(items));
+        clear();
+        return order;
     }
 
-    private void validateAvailableQuantity(Product product, int requestedQuantity) {
-        if (requestedQuantity > product.getAvailableQuantity()) {
-            throw new IllegalArgumentException("Requested quantity exceeds available stock for product " + product.getId());
+    private void requireNonEmpty() {
+        if (items.isEmpty()) {
+            throw new IllegalStateException("Cannot checkout an empty cart");
         }
-    }
-
-    @Override
-    public String toString() {
-        if (isEmpty()) {
-            return "Cart is empty";
-        }
-
-        String cartItems = items.stream()
-                .map(CartItem::toString)
-                .collect(Collectors.joining(System.lineSeparator()));
-
-        return cartItems + System.lineSeparator() + String.format("Total: %.2f PLN", getTotalPrice());
     }
 }
