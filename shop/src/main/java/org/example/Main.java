@@ -8,8 +8,8 @@ import org.example.model.Customer;
 import org.example.model.Order;
 import org.example.model.Product;
 import org.example.model.enums.ConfigType;
-import org.example.persistence.OrderRepository;
-import org.example.persistence.ProductRepository;
+import org.example.model.OrderRepository;
+import org.example.model.ProductRepository;
 import org.example.service.OrderProcessor;
 import org.example.service.ProductManager;
 

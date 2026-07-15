@@ -1,6 +1,4 @@
-package org.example.persistence;
-
-import org.example.model.Product;
+package org.example.model;
 
 import java.nio.file.Path;
 

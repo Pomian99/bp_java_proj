@@ -1,4 +1,4 @@
-package org.example.persistence;
+package org.example.model;
 
 import org.example.exception.PersistenceException;
 

@@ -5,7 +5,7 @@ import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.Configuration;
 import org.example.model.Product;
-import org.example.persistence.OrderRepository;
+import org.example.model.OrderRepository;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;

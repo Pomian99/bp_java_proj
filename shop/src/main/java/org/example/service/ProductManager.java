@@ -2,7 +2,7 @@ package org.example.service;
 
 import lombok.Getter;
 import org.example.model.Product;
-import org.example.persistence.ProductRepository;
+import org.example.model.ProductRepository;
 
 import java.util.*;
 
