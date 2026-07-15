@@ -1,6 +1,4 @@
-package org.example.domain.cart;
-
-import org.example.domain.product.Product;
+package org.example.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,11 +10,7 @@ import java.util.stream.Collectors;
 public class Cart {
     private final List<CartItem> items = new ArrayList<>();
 
-    public void addProduct(Product product) {
-        addProduct(product, 1);
-    }
-
-    public void addProduct(Product product, int quantity) {
+    public void addProduct(Product product, List<Configuration> productConfiguration, int quantity) {
         Objects.requireNonNull(product, "Product cannot be null");
 
         if (quantity <= 0) {
@@ -33,7 +27,7 @@ public class Cart {
         if (existingItem.isPresent()) {
             existingItem.get().increaseQuantity(quantity);
         } else {
-            items.add(new CartItem(product, quantity));
+            items.add(new CartItem(product, List.of(), quantity));
         }
     }
 

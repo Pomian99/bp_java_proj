@@ -1,14 +1,17 @@
-package org.example.domain.cart;
+package org.example.model;
 
-import org.example.domain.product.Product;
+import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+@Getter
 public class CartItem {
     private final Product product;
+    private final List<Configuration> productConfiguration;
     private int quantity;
 
-    public CartItem(Product product, int quantity) {
+    public CartItem(Product product, List<Configuration> productConfiguration, int quantity) {
         if (product == null) {
             throw new IllegalArgumentException("Product cannot be null");
         }
@@ -17,15 +20,8 @@ public class CartItem {
         }
 
         this.product = product;
+        this.productConfiguration = productConfiguration;
         this.quantity = quantity;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public int getQuantity() {
-        return quantity;
     }
 
     public void increaseQuantity(int quantityToAdd) {
