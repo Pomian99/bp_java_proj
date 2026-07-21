@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.exception.InsufficientStockException;
 import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.Configuration;
@@ -23,22 +22,8 @@ public class OrderProcessor {
         Order.seedIdCounterFrom(orderRepository.load());
     }
 
-    public void processOrder(Order order) {
-        for (OrderItem item : order.items()) {
-            Product product = item.product();
-            if (product.getAvailableQuantity() < item.quantity()) {
-                throw new InsufficientStockException(
-                        "Not enough stock for product '" + product.getName() + "' (id=" + product.getId() + "): "
-                                + "requested " + item.quantity() + ", available " + product.getAvailableQuantity());
-            }
-        }
-
-        for (OrderItem item : order.items()) {
-            Product product = item.product();
-            product.setAvailableQuantity(product.getAvailableQuantity() - item.quantity());
-        }
-
-        productManager.persist();
+    public synchronized void processOrder(Order order) {
+        productManager.reserveStockForOrder(order.items());
         orderRepository.append(order);
     }
 
