@@ -293,7 +293,7 @@ public class ShopCli {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
             System.out.printf("Invalid quantity: %s%n", input);
-            return 0;
+            return -1;
         }
     }
 
@@ -308,12 +308,15 @@ public class ShopCli {
             return;
         }
         int quantity = readQuantity();
+        if (quantity < 0) {
+            return;
+        }
 
         try {
             cart.updateQuantityAt(index, quantity);
-            System.out.println("Quantity updated.");
+            System.out.println(quantity <= 0 ? "Item removed from cart." : "Quantity updated.");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Invalid cart item number.");
         }
     }
 
@@ -332,7 +335,7 @@ public class ShopCli {
             cart.removeAt(index);
             System.out.println("Removed from cart.");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Invalid cart item number.");
         }
     }
 
@@ -360,9 +363,29 @@ public class ShopCli {
         try {
             orderProcessor.processOrder(order);
             cart.clear();
-            System.out.printf("%nOrder placed successfully!%n%n%s%n", orderProcessor.generateInvoice(order));
+            System.out.printf("%nOrder placed successfully! Order id: %s%n", order.id());
+
+            if (askYesNo("Generate invoice?")) {
+                System.out.printf("%n%s%n", orderProcessor.generateInvoice(order));
+            }
         } catch (InsufficientStockException e) {
             System.out.printf("%nOrder could not be processed: %s%n", e.getMessage());
+        }
+    }
+
+    private boolean askYesNo(String question) {
+        while (true) {
+            System.out.printf("%s (y/n): ", question);
+            String input = scanner.nextLine().trim().toLowerCase();
+            switch (input) {
+                case "y", "yes" -> {
+                    return true;
+                }
+                case "n", "no" -> {
+                    return false;
+                }
+                default -> System.out.println("Please answer y or n.");
+            }
         }
     }
 
@@ -371,15 +394,24 @@ public class ShopCli {
 
                 Please provide your details for the order.
                 Name: """);
-        String name = scanner.nextLine().trim();
+        String name = readNonBlank();
 
         System.out.print("Email: ");
-        String email = scanner.nextLine().trim();
+        String email = readNonBlank();
 
         System.out.print("Address: ");
         String address = scanner.nextLine().trim();
 
         return new Customer(name, email, address);
+    }
+
+    private String readNonBlank() {
+        String input = scanner.nextLine().trim();
+        while (input.isEmpty()) {
+            System.out.print("This field cannot be empty, please enter a value: ");
+            input = scanner.nextLine().trim();
+        }
+        return input;
     }
 
     private String formatPrice(BigDecimal price) {
