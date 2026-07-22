@@ -58,11 +58,9 @@ public class Cart {
         items.clear();
     }
 
-    public Order checkout(Customer customer) {
+    public Order toOrder(Customer customer) {
         requireNonEmpty();
-        Order order = new Order(customer, List.copyOf(items));
-        clear();
-        return order;
+        return new Order(customer, List.copyOf(items));
     }
 
     private void requireNonEmpty() {

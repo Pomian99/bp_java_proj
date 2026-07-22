@@ -1,7 +1,10 @@
 package org.example.cli;
 
+import org.example.exception.InsufficientStockException;
 import org.example.model.Cart;
 import org.example.model.Configuration;
+import org.example.model.Customer;
+import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.Product;
 import org.example.model.enums.ConfigType;
@@ -345,7 +348,38 @@ public class ShopCli {
     }
 
     private void checkout() {
-        System.out.println("Place order");
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty, nothing to order.");
+            return;
+        }
+
+        printCartContents();
+        Customer customer = readCustomer();
+        Order order = cart.toOrder(customer);
+
+        try {
+            orderProcessor.processOrder(order);
+            cart.clear();
+            System.out.printf("%nOrder placed successfully!%n%n%s%n", orderProcessor.generateInvoice(order));
+        } catch (InsufficientStockException e) {
+            System.out.printf("%nOrder could not be processed: %s%n", e.getMessage());
+        }
+    }
+
+    private Customer readCustomer() {
+        System.out.print("""
+
+                Please provide your details for the order.
+                Name: """);
+        String name = scanner.nextLine().trim();
+
+        System.out.print("Email: ");
+        String email = scanner.nextLine().trim();
+
+        System.out.print("Address: ");
+        String address = scanner.nextLine().trim();
+
+        return new Customer(name, email, address);
     }
 
     private String formatPrice(BigDecimal price) {
