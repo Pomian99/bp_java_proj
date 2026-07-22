@@ -3,12 +3,7 @@ package org.example.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-/**
- * A customer's in-progress selection of products, held in memory until
- * checkout() turns it into an Order.
- */
 public class Cart {
     private final List<OrderItem> items = new ArrayList<>();
 
@@ -25,24 +20,24 @@ public class Cart {
         items.add(newItem);
     }
 
-    public void removeProduct(String productId) {
-        items.removeIf(item -> item.product().getId().equals(productId));
+    public void removeAt(int index) {
+        checkIndex(index);
+        items.remove(index);
     }
 
-    public void updateQuantity(String productId, int newQuantity) {
+    public void updateQuantityAt(int index, int newQuantity) {
+        checkIndex(index);
         if (newQuantity <= 0) {
-            removeProduct(productId);
+            items.remove(index);
             return;
         }
+        items.set(index, items.get(index).withQuantity(newQuantity));
+    }
 
-        for (int i = 0; i < items.size(); i++) {
-            OrderItem item = items.get(i);
-            if (item.product().getId().equals(productId)) {
-                items.set(i, item.withQuantity(newQuantity));
-                return;
-            }
+    private void checkIndex(int index) {
+        if (index < 0 || index >= items.size()) {
+            throw new IndexOutOfBoundsException("No cart item at index: " + index);
         }
-        throw new NoSuchElementException("No cart item for product id: " + productId);
     }
 
     public List<OrderItem> viewCart() {
