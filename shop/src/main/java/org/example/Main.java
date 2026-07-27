@@ -16,6 +16,8 @@ public class Main {
 
         try (Scanner scanner = new Scanner(System.in)) {
             new ShopCli(services.productManager(), services.orderProcessor(), scanner).run();
+        } finally {
+            services.orderProcessor().shutdown();
         }
     }
 

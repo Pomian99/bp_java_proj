@@ -9,6 +9,10 @@ import org.example.model.OrderRepository;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OrderProcessor {
 
@@ -17,6 +21,7 @@ public class OrderProcessor {
 
     private final ProductManager productManager;
     private final OrderRepository orderRepository;
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     public OrderProcessor(ProductManager productManager, OrderRepository orderRepository) {
         this.productManager = productManager;
@@ -27,6 +32,25 @@ public class OrderProcessor {
     public synchronized void processOrder(Order order) {
         productManager.reserveStockForOrder(order.items());
         orderRepository.append(order);
+    }
+
+    public CompletableFuture<Order> processOrderAsync(Order order) {
+        return CompletableFuture.supplyAsync(() -> {
+            processOrder(order);
+            return order;
+        }, executor);
+    }
+
+    public void shutdown() {
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     public String generateInvoice(Order order) {

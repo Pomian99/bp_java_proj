@@ -7,6 +7,7 @@ import org.example.model.Order;
 import org.example.service.OrderProcessor;
 
 import java.util.Scanner;
+import java.util.concurrent.CompletionException;
 
 class CheckoutFlow {
     private final Cart cart;
@@ -32,15 +33,19 @@ class CheckoutFlow {
         Order order = cart.toOrder(customer);
 
         try {
-            orderProcessor.processOrder(order);
+            orderProcessor.processOrderAsync(order).join();
             cart.clear();
             System.out.printf("%nOrder placed successfully! Order id: %s%n", order.id());
 
             if (CliUtils.askYesNo(scanner, "Generate invoice?")) {
                 System.out.printf("%n%s%n", orderProcessor.generateInvoice(order));
             }
-        } catch (InsufficientStockException e) {
-            System.out.printf("%nOrder could not be processed: %s%n", e.getMessage());
+        } catch (CompletionException e) {
+            if (e.getCause() instanceof InsufficientStockException cause) {
+                System.out.printf("%nOrder could not be processed: %s%n", cause.getMessage());
+            } else {
+                throw e;
+            }
         }
     }
 
