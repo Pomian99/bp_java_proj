@@ -12,22 +12,30 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Path dataDir = Path.of("shop-data");
+        ShopServices services = initializeShopServices(Path.of("shop-data"));
+
+        try (Scanner scanner = new Scanner(System.in)) {
+            new ShopCli(services.productManager(), services.orderProcessor(), scanner).run();
+        }
+    }
+
+    private static ShopServices initializeShopServices(Path dataDir) {
         ProductRepository productRepository = new ProductRepository(dataDir.resolve("products.dat"));
         OrderRepository orderRepository = new OrderRepository(dataDir.resolve("orders.dat"));
 
-        ProductManager manager = new ProductManager(productRepository);
-        if (manager.getProducts().isEmpty()) {
+        ProductManager productManager = new ProductManager(productRepository);
+        if (productManager.getProducts().isEmpty()) {
             System.out.println("No persisted products found, generating sample catalog.");
-            ProductGenerator.generateProducts().forEach(manager::addProduct);
+            ProductGenerator.generateProducts().forEach(productManager::addProduct);
         } else {
             System.out.println("Loaded persisted products from " + dataDir.resolve("products.dat"));
         }
 
-        OrderProcessor orderProcessor = new OrderProcessor(manager, orderRepository);
+        OrderProcessor orderProcessor = new OrderProcessor(productManager, orderRepository);
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            new ShopCli(manager, orderProcessor, scanner).run();
-        }
+        return new ShopServices(productManager, orderProcessor);
+    }
+
+    private record ShopServices(ProductManager productManager, OrderProcessor orderProcessor) {
     }
 }
