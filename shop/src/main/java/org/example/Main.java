@@ -2,12 +2,6 @@ package org.example;
 
 import org.example.cli.ShopCli;
 import org.example.generators.ProductGenerator;
-import org.example.model.Cart;
-import org.example.model.Configuration;
-import org.example.model.Customer;
-import org.example.model.Order;
-import org.example.model.Product;
-import org.example.model.enums.ConfigType;
 import org.example.model.OrderRepository;
 import org.example.model.ProductRepository;
 import org.example.service.OrderProcessor;

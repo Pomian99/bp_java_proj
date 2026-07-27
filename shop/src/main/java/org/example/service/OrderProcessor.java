@@ -7,11 +7,13 @@ import org.example.model.Product;
 import org.example.model.OrderRepository;
 
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class OrderProcessor {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final ZoneId DISPLAY_ZONE = ZoneId.systemDefault();
 
     private final ProductManager productManager;
     private final OrderRepository orderRepository;
@@ -33,7 +35,7 @@ public class OrderProcessor {
         invoice.append("INVOICE\n");
         invoice.append("=======\n");
         invoice.append("Order ID: ").append(order.id()).append('\n');
-        invoice.append("Date: ").append(order.orderDate().format(DATE_FORMAT)).append('\n');
+        invoice.append("Date: ").append(DATE_FORMAT.format(order.orderDate().atZone(DISPLAY_ZONE))).append('\n');
         invoice.append('\n');
 
         invoice.append("Customer: ").append(order.customer().name()).append('\n');

@@ -2,7 +2,7 @@ package org.example.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -11,15 +11,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * was placed. Created via Cart.checkout(), then handed to OrderProcessor.
  */
 public record Order(String id, Customer customer, List<OrderItem> items,
-                    LocalDateTime orderDate) implements Serializable {
+                    Instant orderDate) implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final AtomicLong ID_COUNTER = new AtomicLong(1);
 
     public Order(Customer customer, List<OrderItem> items) {
-        this(generateId(), customer, items, LocalDateTime.now());
+        this(generateId(), customer, items, Instant.now());
     }
 
-    public Order(String id, Customer customer, List<OrderItem> items, LocalDateTime orderDate) {
+    public Order(String id, Customer customer, List<OrderItem> items, Instant orderDate) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Order id must not be blank");
         }
