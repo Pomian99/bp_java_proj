@@ -51,7 +51,7 @@ class CheckoutFlow {
 
     private Customer readCustomer() {
         System.out.print("""
-
+                
                 Please provide your details for the order.
                 Name:\s""");
         String name = CliUtils.readNonBlank(scanner);

@@ -54,7 +54,7 @@ class ProductBrowser {
             List<Product> view = buildProductView(products);
 
             System.out.print("""
-
+                    
                     === Products ===
                     """);
             printSortAndFilterStatus();
@@ -148,7 +148,7 @@ class ProductBrowser {
     private void openSortMenu() {
         while (true) {
             System.out.print("""
-
+                    
                     === Sort products ===
                     1. Name
                     2. Price
@@ -191,7 +191,7 @@ class ProductBrowser {
     private void openFilterMenu() {
         while (true) {
             System.out.print("""
-
+                    
                     === Filter products ===
                     1. By type
                     2. Toggle in-stock only
@@ -288,13 +288,13 @@ class ProductBrowser {
 
     private void showProductDetails(Product product) {
         System.out.printf("""
-
-                === %s ===
-                Id: %s
-                Type: %s
-                Price: %s PLN
-                Available quantity: %d
-                """,
+                        
+                        === %s ===
+                        Id: %s
+                        Type: %s
+                        Price: %s PLN
+                        Available quantity: %d
+                        """,
                 product.getName(), product.getId(), product.getType(),
                 CliUtils.formatPrice(product.getPrice()), product.getAvailableQuantity());
 
@@ -313,7 +313,7 @@ class ProductBrowser {
 
         while (true) {
             System.out.print("""
-
+                    
                     1. Add to cart
                     0. Back to product list
                     Choose an option:\s""");

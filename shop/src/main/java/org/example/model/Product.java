@@ -15,7 +15,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * A sellable item: id, type, name, price, available stock and the
  * configuration options (if any) that can be picked when ordering it.
  */
-@Getter @Setter @AllArgsConstructor @ToString
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
 public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final AtomicLong ID_COUNTER = new AtomicLong(1);

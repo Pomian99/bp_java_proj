@@ -13,18 +13,18 @@ import java.util.Map;
 
 /**
  * Static factory of sample Product test data.
- *
+ * <p>
  * Notes on modelling choices:
  * - Configuration.multiChoice() = false  -> exactly ONE option of that ConfigType
- *   may be selected at order time (e.g. you can't have two RAM sizes at once).
+ * may be selected at order time (e.g. you can't have two RAM sizes at once).
  * - Configuration.multiChoice() = true   -> MULTIPLE options of that ConfigType
- *   may be selected at order time (e.g. several accessories).
+ * may be selected at order time (e.g. several accessories).
  * - availableConfiguration may contain several Configuration entries that share
- *   the same ConfigType (these are the choices offered for that type); the
- *   multiChoice flag on each of them indicates how many of that type may
- *   ultimately be chosen.
+ * the same ConfigType (these are the choices offered for that type); the
+ * multiChoice flag on each of them indicates how many of that type may
+ * ultimately be chosen.
  * - Electronics products have no configuration options at all (per spec), so
- *   they always get an empty availableConfiguration list.
+ * they always get an empty availableConfiguration list.
  */
 public final class ProductGenerator {
 

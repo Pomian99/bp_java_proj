@@ -42,7 +42,7 @@ public class ShopCli {
 
     private void printMenu() {
         System.out.print("""
-
+                
                 === Main menu ===
                 1. Browse products
                 2. Cart

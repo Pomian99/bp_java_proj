@@ -31,7 +31,7 @@ class CartMenu {
             printCartContents();
 
             System.out.print("""
-
+                    
                     1. Add product to cart
                     2. Update item quantity
                     3. Remove item
@@ -53,7 +53,7 @@ class CartMenu {
 
     void printCartContents() {
         System.out.print("""
-
+                
                 === Cart ===
                 """);
 

@@ -10,7 +10,8 @@ import java.math.BigDecimal;
  * controls whether more than one Configuration of the same type may be
  * selected on a single OrderItem.
  */
-public record Configuration(String name, ConfigType type, BigDecimal price, boolean multipleChoice) implements Serializable {
+public record Configuration(String name, ConfigType type, BigDecimal price,
+                            boolean multipleChoice) implements Serializable {
     public Configuration(String name, ConfigType type, BigDecimal price) {
         this(name, type, price, false);
     }

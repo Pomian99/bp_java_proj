@@ -26,8 +26,7 @@ public class ProductManager {
 
     public synchronized void addProduct(Product product) {
         Objects.requireNonNull(product, "Product cannot be null");
-        if (products.stream().anyMatch(product1 -> product1.getId().equals(product.getId())))
-        {
+        if (products.stream().anyMatch(product1 -> product1.getId().equals(product.getId()))) {
             throw new IllegalArgumentException("Product with id " + product.getId() + " already exists");
         }
 
