@@ -5,8 +5,10 @@ import org.example.model.Configuration;
 import org.example.model.OrderItem;
 import org.example.model.Product;
 import org.example.model.ConfigType;
+import org.example.model.discount.AppliedDiscount;
 import org.example.service.ProductManager;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,7 +75,13 @@ class CartMenu {
             }
         }
 
-        System.out.printf("%nTotal: %s PLN%n", CliUtils.formatPrice(cart.getTotal()));
+        BigDecimal subtotal = cart.getTotal();
+        Optional<AppliedDiscount> discount = productManager.getBestDiscount(items);
+        discount.ifPresent(applied -> System.out.printf("%nDiscount: %-20s -%s PLN%n",
+                applied.description(), CliUtils.formatPrice(applied.amount())));
+
+        BigDecimal total = discount.map(applied -> subtotal.subtract(applied.amount())).orElse(subtotal);
+        System.out.printf("%nTotal: %s PLN%n", CliUtils.formatPrice(total));
     }
 
     private void addProductToCart() {

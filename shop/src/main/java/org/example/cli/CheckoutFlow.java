@@ -4,19 +4,25 @@ import org.example.exception.InsufficientStockException;
 import org.example.model.Cart;
 import org.example.model.Customer;
 import org.example.model.Order;
+import org.example.model.OrderItem;
+import org.example.model.discount.AppliedDiscount;
 import org.example.service.OrderProcessor;
+import org.example.service.ProductManager;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletionException;
 
 class CheckoutFlow {
     private final Cart cart;
+    private final ProductManager productManager;
     private final OrderProcessor orderProcessor;
     private final CartMenu cartMenu;
     private final Scanner scanner;
 
-    CheckoutFlow(Cart cart, OrderProcessor orderProcessor, CartMenu cartMenu, Scanner scanner) {
+    CheckoutFlow(Cart cart, ProductManager productManager, OrderProcessor orderProcessor, CartMenu cartMenu, Scanner scanner) {
         this.cart = cart;
+        this.productManager = productManager;
         this.orderProcessor = orderProcessor;
         this.cartMenu = cartMenu;
         this.scanner = scanner;
@@ -30,12 +36,15 @@ class CheckoutFlow {
 
         cartMenu.printCartContents();
         Customer customer = readCustomer();
-        Order order = cart.toOrder(customer);
+
+        List<OrderItem> items = cart.viewCart();
+        AppliedDiscount appliedDiscount = productManager.getBestDiscount(items).orElse(null);
+        Order order = new Order(customer, items, appliedDiscount);
 
         try {
             orderProcessor.processOrderAsync(order).join();
             cart.clear();
-            System.out.printf("%nOrder placed successfully! Order id: %s%n", order.id());
+            System.out.printf("%nOrder placed successfully! Order id: %s%n", order.getId());
 
             if (CliUtils.askYesNo(scanner, "Generate invoice?")) {
                 System.out.printf("%n%s%n", orderProcessor.generateInvoice(order));

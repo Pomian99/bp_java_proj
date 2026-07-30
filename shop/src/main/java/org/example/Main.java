@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.cli.ShopCli;
+import org.example.generators.DiscountGenerator;
 import org.example.generators.ProductGenerator;
 import org.example.repository.OrderRepository;
 import org.example.repository.ProductRepository;
@@ -32,6 +33,8 @@ public class Main {
         } else {
             System.out.println("Loaded persisted products from " + dataDir.resolve("products.dat"));
         }
+
+        DiscountGenerator.generateDiscounts().forEach(productManager::addDiscount);
 
         OrderProcessor orderProcessor = new OrderProcessor(productManager, orderRepository);
 

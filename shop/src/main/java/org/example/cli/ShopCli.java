@@ -1,24 +1,32 @@
 package org.example.cli;
 
 import org.example.model.Cart;
+import org.example.model.discount.Discount;
 import org.example.service.OrderProcessor;
 import org.example.service.ProductManager;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class ShopCli {
+    private static final DateTimeFormatter EXPIRY_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private final Scanner scanner;
+    private final ProductManager productManager;
     private final ProductBrowser productBrowser;
     private final CartMenu cartMenu;
     private final CheckoutFlow checkoutFlow;
 
     public ShopCli(ProductManager productManager, OrderProcessor orderProcessor, Scanner scanner) {
         this.scanner = scanner;
+        this.productManager = productManager;
 
         Cart cart = new Cart();
         this.cartMenu = new CartMenu(productManager, cart, scanner);
         this.productBrowser = new ProductBrowser(productManager, cartMenu, scanner);
-        this.checkoutFlow = new CheckoutFlow(cart, orderProcessor, cartMenu, scanner);
+        this.checkoutFlow = new CheckoutFlow(cart, productManager, orderProcessor, cartMenu, scanner);
     }
 
     public void run() {
@@ -32,6 +40,7 @@ public class ShopCli {
                 case "1" -> productBrowser.browse();
                 case "2" -> cartMenu.view();
                 case "3" -> checkoutFlow.checkout();
+                case "4" -> viewDiscounts();
                 case "0", "" -> running = false;
                 default -> System.out.println("Unknown option, please choose a number from the menu.");
             }
@@ -42,12 +51,33 @@ public class ShopCli {
 
     private void printMenu() {
         System.out.print("""
-                
+
                 === Main menu ===
                 1. Browse products
                 2. Cart
                 3. Place order
+                4. View current discounts
                 0. Exit
                 Choose an option:\s""");
+    }
+
+    private void viewDiscounts() {
+        List<Discount> discounts = productManager.getActiveDiscounts();
+
+        System.out.print("""
+
+                === Current discounts ===
+                """);
+
+        if (discounts.isEmpty()) {
+            System.out.println("No discounts are currently active.");
+            return;
+        }
+
+        for (Discount discount : discounts) {
+            System.out.printf("- %s (valid until %s)%n",
+                    discount.getDescription(),
+                    EXPIRY_FORMAT.format(discount.getExpiresAt().atZone(ZoneId.systemDefault())));
+        }
     }
 }

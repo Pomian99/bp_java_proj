@@ -57,15 +57,4 @@ public class Cart {
     public void clear() {
         items.clear();
     }
-
-    public Order toOrder(Customer customer) {
-        requireNonEmpty();
-        return new Order(customer, List.copyOf(items));
-    }
-
-    private void requireNonEmpty() {
-        if (items.isEmpty()) {
-            throw new IllegalStateException("Cannot checkout an empty cart");
-        }
-    }
 }

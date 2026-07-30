@@ -30,7 +30,7 @@ public class OrderProcessor {
     }
 
     public synchronized void processOrder(Order order) {
-        productManager.reserveStockForOrder(order.items());
+        productManager.reserveStockForOrder(order.getItems());
         orderRepository.append(order);
     }
 
@@ -58,20 +58,20 @@ public class OrderProcessor {
 
         invoice.append("INVOICE\n");
         invoice.append("=======\n");
-        invoice.append("Order ID: ").append(order.id()).append('\n');
-        invoice.append("Date: ").append(DATE_FORMAT.format(order.orderDate().atZone(DISPLAY_ZONE))).append('\n');
+        invoice.append("Order ID: ").append(order.getId()).append('\n');
+        invoice.append("Date: ").append(DATE_FORMAT.format(order.getOrderDate().atZone(DISPLAY_ZONE))).append('\n');
         invoice.append('\n');
 
-        invoice.append("Customer: ").append(order.customer().name()).append('\n');
-        invoice.append("Email: ").append(order.customer().email()).append('\n');
-        if (order.customer().address() != null && !order.customer().address().isBlank()) {
-            invoice.append("Address: ").append(order.customer().address()).append('\n');
+        invoice.append("Customer: ").append(order.getCustomer().name()).append('\n');
+        invoice.append("Email: ").append(order.getCustomer().email()).append('\n');
+        if (order.getCustomer().address() != null && !order.getCustomer().address().isBlank()) {
+            invoice.append("Address: ").append(order.getCustomer().address()).append('\n');
         }
         invoice.append('\n');
 
         invoice.append("Items:\n");
         invoice.append("------\n");
-        for (OrderItem item : order.items()) {
+        for (OrderItem item : order.getItems()) {
             Product product = item.product();
             invoice.append(String.format("%-30s x%-3d %10s%n",
                     product.getName(), item.quantity(), formatPrice(item.getLineTotal())));
@@ -81,6 +81,9 @@ public class OrderProcessor {
                         configuration.name(), formatPrice(configuration.price())));
             }
         }
+
+        order.getAppliedDiscount().ifPresent(discount -> invoice.append(String.format("%n%-30s -%14s%n",
+                "Discount: " + discount.description(), formatPrice(discount.amount()))));
 
         invoice.append('\n');
         invoice.append(String.format("%-30s %14s%n", "TOTAL", formatPrice(order.getTotal())));
