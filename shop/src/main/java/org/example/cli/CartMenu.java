@@ -21,11 +21,13 @@ class CartMenu {
     private final ProductManager productManager;
     private final Cart cart;
     private final Scanner scanner;
+    private final CheckoutFlow checkoutFlow;
 
-    CartMenu(ProductManager productManager, Cart cart, Scanner scanner) {
+    CartMenu(ProductManager productManager, Cart cart, Scanner scanner, CheckoutFlow checkoutFlow) {
         this.productManager = productManager;
         this.cart = cart;
         this.scanner = scanner;
+        this.checkoutFlow = checkoutFlow;
     }
 
     void view() {
@@ -33,10 +35,11 @@ class CartMenu {
             printCartContents();
 
             System.out.print("""
-                    
+
                     1. Add product to cart
                     2. Update item quantity
                     3. Remove item
+                    4. Place order
                     0. Back to main menu
                     Choose an option:\s""");
 
@@ -45,6 +48,7 @@ class CartMenu {
                 case "1" -> addProductToCart();
                 case "2" -> updateCartItemQuantity();
                 case "3" -> removeCartItem();
+                case "4" -> checkoutFlow.checkout();
                 case "0", "" -> {
                     return;
                 }

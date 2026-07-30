@@ -17,16 +17,15 @@ public class ShopCli {
     private final ProductManager productManager;
     private final ProductBrowser productBrowser;
     private final CartMenu cartMenu;
-    private final CheckoutFlow checkoutFlow;
 
     public ShopCli(ProductManager productManager, OrderProcessor orderProcessor, Scanner scanner) {
         this.scanner = scanner;
         this.productManager = productManager;
 
         Cart cart = new Cart();
-        this.cartMenu = new CartMenu(productManager, cart, scanner);
+        CheckoutFlow checkoutFlow = new CheckoutFlow(cart, productManager, orderProcessor, scanner);
+        this.cartMenu = new CartMenu(productManager, cart, scanner, checkoutFlow);
         this.productBrowser = new ProductBrowser(productManager, cartMenu, scanner);
-        this.checkoutFlow = new CheckoutFlow(cart, productManager, orderProcessor, cartMenu, scanner);
     }
 
     public void run() {
@@ -39,8 +38,7 @@ public class ShopCli {
             switch (choice) {
                 case "1" -> productBrowser.browse();
                 case "2" -> cartMenu.view();
-                case "3" -> checkoutFlow.checkout();
-                case "4" -> viewDiscounts();
+                case "3" -> viewDiscounts();
                 case "0", "" -> running = false;
                 default -> System.out.println("Unknown option, please choose a number from the menu.");
             }
@@ -55,8 +53,7 @@ public class ShopCli {
                 === Main menu ===
                 1. Browse products
                 2. Cart
-                3. Place order
-                4. View current discounts
+                3. View current discounts
                 0. Exit
                 Choose an option:\s""");
     }

@@ -17,14 +17,12 @@ class CheckoutFlow {
     private final Cart cart;
     private final ProductManager productManager;
     private final OrderProcessor orderProcessor;
-    private final CartMenu cartMenu;
     private final Scanner scanner;
 
-    CheckoutFlow(Cart cart, ProductManager productManager, OrderProcessor orderProcessor, CartMenu cartMenu, Scanner scanner) {
+    CheckoutFlow(Cart cart, ProductManager productManager, OrderProcessor orderProcessor, Scanner scanner) {
         this.cart = cart;
         this.productManager = productManager;
         this.orderProcessor = orderProcessor;
-        this.cartMenu = cartMenu;
         this.scanner = scanner;
     }
 
@@ -34,7 +32,6 @@ class CheckoutFlow {
             return;
         }
 
-        cartMenu.printCartContents();
         Customer customer = readCustomer();
 
         List<OrderItem> items = cart.viewCart();
