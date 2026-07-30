@@ -84,72 +84,64 @@ public final class ProductGenerator {
         List<Product> products = new ArrayList<>();
 
         // ---- COMPUTER (2) --------------------------------------------------
-        products.add(new Product(
-                "PROD-COMP-001",
-                ProductType.COMPUTER,
-                "UltraBook Pro 14",
-                combine(
+        products.add(Product.builder()
+                .type(ProductType.COMPUTER)
+                .name("UltraBook Pro 14")
+                .availableConfiguration(combine(
                         pick(parts, ConfigType.RAM, 0, 1, 2),        // all 3 RAM options
                         pick(parts, ConfigType.HARD_DRIVE, 0, 1, 2)  // all 3 storage options
-                ),
-                new BigDecimal("1299.00"),
-                25
-        ));
-        products.add(new Product(
-                "PROD-COMP-002",
-                ProductType.COMPUTER,
-                "GameForce X17",
-                combine(
+                ))
+                .basePrice(new BigDecimal("1299.00"))
+                .availableQuantity(25)
+                .build());
+        products.add(Product.builder()
+                .type(ProductType.COMPUTER)
+                .name("GameForce X17")
+                .availableConfiguration(combine(
                         pick(parts, ConfigType.RAM, 1, 2),           // only 16GB / 32GB (no 8GB)
                         pick(parts, ConfigType.HARD_DRIVE, 1, 2)     // only 512GB / 1TB
-                ),
-                new BigDecimal("1899.00"),
-                10
-        ));
+                ))
+                .basePrice(new BigDecimal("1899.00"))
+                .availableQuantity(10)
+                .build());
 
         // ---- SMARTPHONE (2) -------------------------------------------------
-        products.add(new Product(
-                "PROD-PHONE-001",
-                ProductType.SMARTPHONE,
-                "Nova X12",
-                combine(
+        products.add(Product.builder()
+                .type(ProductType.SMARTPHONE)
+                .name("Nova X12")
+                .availableConfiguration(combine(
                         pick(parts, ConfigType.COLOR, 0, 1, 2, 3, 4),      // all 5 colours
                         pick(parts, ConfigType.BATTERY_CAPACITY, 0, 1),     // both battery options
                         pick(parts, ConfigType.ACCESSORY, 0, 1)             // Fast Charger, Screen Protector
-                ),
-                new BigDecimal("899.00"),
-                50
-        ));
-        products.add(new Product(
-                "PROD-PHONE-002",
-                ProductType.SMARTPHONE,
-                "Nova X12 Mini",
-                combine(
+                ))
+                .basePrice(new BigDecimal("899.00"))
+                .availableQuantity(50)
+                .build());
+        products.add(Product.builder()
+                .type(ProductType.SMARTPHONE)
+                .name("Nova X12 Mini")
+                .availableConfiguration(combine(
                         pick(parts, ConfigType.COLOR, 2, 3),        // only 2 colors (Midnight Black, Ocean Blue)
                         pick(parts, ConfigType.BATTERY_CAPACITY, 0), // standard battery only
                         pick(parts, ConfigType.ACCESSORY, 0)         // Fast Charger only
-                ),
-                new BigDecimal("699.00"),
-                40
-        ));
+                ))
+                .basePrice(new BigDecimal("699.00"))
+                .availableQuantity(40)
+                .build());
 
         // ---- ELECTRONICS (2) -- no configuration, per spec -------------------
-        products.add(new Product(
-                "PROD-ELEC-001",
-                ProductType.ELECTRONICS,
-                "SoundWave Pro Headphones",
-                List.of(),
-                new BigDecimal("199.00"),
-                100
-        ));
-        products.add(new Product(
-                "PROD-ELEC-002",
-                ProductType.ELECTRONICS,
-                "SmartHome Speaker",
-                List.of(),
-                new BigDecimal("129.00"),
-                60
-        ));
+        products.add(Product.builder()
+                .type(ProductType.ELECTRONICS)
+                .name("SoundWave Pro Headphones")
+                .basePrice(new BigDecimal("199.00"))
+                .availableQuantity(100)
+                .build());
+        products.add(Product.builder()
+                .type(ProductType.ELECTRONICS)
+                .name("SmartHome Speaker")
+                .basePrice(new BigDecimal("129.00"))
+                .availableQuantity(60)
+                .build());
 
         return products;
     }

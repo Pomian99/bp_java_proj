@@ -1,8 +1,9 @@
 package org.example.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -16,7 +17,6 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @ToString
 public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -29,16 +29,18 @@ public class Product implements Serializable {
     private BigDecimal basePrice;
     private int availableQuantity;
 
-    public Product(ProductType type, String name, List<Configuration> availableConfiguration, BigDecimal basePrice, int availableQuantity) {
-        this(generateId(), type, name, availableConfiguration, basePrice, availableQuantity);
+    @Builder
+    private Product(ProductType type, String name, @Singular("configuration") List<Configuration> availableConfiguration, BigDecimal basePrice, int availableQuantity) {
+        this.id = generateId();
+        this.type = type;
+        this.name = name;
+        this.availableConfiguration = availableConfiguration;
+        this.basePrice = basePrice;
+        this.availableQuantity = availableQuantity;
     }
 
     private static String generateId() {
         return String.format("PROD-%04d", ID_COUNTER.getAndIncrement());
-    }
-
-    public Product(String name, ProductType type, BigDecimal basePrice, int availableQuantity) {
-        this(type, name, List.of(), basePrice, availableQuantity);
     }
 
     public BigDecimal getPrice() {
