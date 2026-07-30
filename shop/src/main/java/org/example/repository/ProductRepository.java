@@ -2,11 +2,11 @@ package org.example.repository;
 
 import org.example.model.Product;
 
-import java.nio.file.Path;
+import java.util.List;
 
-public class ProductRepository extends ListFileRepository<Product> {
+public interface ProductRepository {
 
-    public ProductRepository(Path filePath) {
-        super(filePath);
-    }
+    List<Product> load();
+
+    void save(List<Product> items);
 }

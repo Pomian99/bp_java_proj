@@ -3,6 +3,8 @@ package org.example;
 import org.example.cli.ShopCli;
 import org.example.generators.DiscountGenerator;
 import org.example.generators.ProductGenerator;
+import org.example.repository.FileOrderRepository;
+import org.example.repository.FileProductRepository;
 import org.example.repository.OrderRepository;
 import org.example.repository.ProductRepository;
 import org.example.service.OrderProcessor;
@@ -23,8 +25,8 @@ public class Main {
     }
 
     private static ShopServices initializeShopServices(Path dataDir) {
-        ProductRepository productRepository = new ProductRepository(dataDir.resolve("products.dat"));
-        OrderRepository orderRepository = new OrderRepository(dataDir.resolve("orders.dat"));
+        ProductRepository productRepository = new FileProductRepository(dataDir.resolve("products.dat"));
+        OrderRepository orderRepository = new FileOrderRepository(dataDir.resolve("orders.dat"));
 
         ProductManager productManager = new ProductManager(productRepository);
         if (productManager.getProducts().isEmpty()) {
