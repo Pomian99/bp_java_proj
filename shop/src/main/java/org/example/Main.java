@@ -2,8 +2,8 @@ package org.example;
 
 import org.example.cli.ShopCli;
 import org.example.generators.ProductGenerator;
-import org.example.model.OrderRepository;
-import org.example.model.ProductRepository;
+import org.example.repository.OrderRepository;
+import org.example.repository.ProductRepository;
 import org.example.service.OrderProcessor;
 import org.example.service.ProductManager;
 

@@ -1,4 +1,6 @@
-package org.example.model;
+package org.example.repository;
+
+import org.example.model.Order;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

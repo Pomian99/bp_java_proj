@@ -4,7 +4,7 @@ import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.Configuration;
 import org.example.model.Product;
-import org.example.model.OrderRepository;
+import org.example.repository.OrderRepository;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;

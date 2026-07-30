@@ -3,7 +3,7 @@ package org.example.service;
 import org.example.exception.InsufficientStockException;
 import org.example.model.OrderItem;
 import org.example.model.Product;
-import org.example.model.ProductRepository;
+import org.example.repository.ProductRepository;
 
 import java.util.*;
 
