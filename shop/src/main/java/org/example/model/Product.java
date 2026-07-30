@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.example.model.enums.ProductType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

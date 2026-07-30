@@ -1,7 +1,5 @@
 package org.example.model;
 
-import org.example.model.enums.ConfigType;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 

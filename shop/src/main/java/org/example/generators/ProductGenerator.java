@@ -2,8 +2,8 @@ package org.example.generators;
 
 import org.example.model.Configuration;
 import org.example.model.Product;
-import org.example.model.enums.ConfigType;
-import org.example.model.enums.ProductType;
+import org.example.model.ConfigType;
+import org.example.model.ProductType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

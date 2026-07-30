@@ -4,7 +4,7 @@ import org.example.model.Cart;
 import org.example.model.Configuration;
 import org.example.model.OrderItem;
 import org.example.model.Product;
-import org.example.model.enums.ConfigType;
+import org.example.model.ConfigType;
 import org.example.service.ProductManager;
 
 import java.util.ArrayList;

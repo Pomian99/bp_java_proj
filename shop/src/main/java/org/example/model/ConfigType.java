@@ -1,4 +1,4 @@
-package org.example.model.enums;
+package org.example.model;
 
 public enum ConfigType {
     RAM,
