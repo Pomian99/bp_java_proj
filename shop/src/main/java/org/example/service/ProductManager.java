@@ -53,9 +53,9 @@ public class ProductManager {
         for (OrderItem item : items) {
             Product product = requireProduct(item.product().getId());
             if (product.getAvailableQuantity() < item.quantity()) {
-                throw new InsufficientStockException(
-                        "Not enough stock for product '" + product.getName() + "' (id=" + product.getId() + "): "
-                                + "requested " + item.quantity() + ", available " + product.getAvailableQuantity());
+                throw new InsufficientStockException(String.format(
+                        "Not enough stock for product '%s' (id=%s): requested %d, available %d",
+                        product.getName(), product.getId(), item.quantity(), product.getAvailableQuantity()));
             }
         }
 
@@ -71,9 +71,9 @@ public class ProductManager {
         Product product = requireProduct(id);
         int newQuantity = product.getAvailableQuantity() + delta;
         if (newQuantity < 0) {
-            throw new IllegalArgumentException(
-                    "Adjustment would make stock negative for product " + id + ": "
-                            + product.getAvailableQuantity() + " + (" + delta + ")");
+            throw new IllegalArgumentException(String.format(
+                    "Adjustment would make stock negative for product %s: %d + (%d)",
+                    id, product.getAvailableQuantity(), delta));
         }
         product.setAvailableQuantity(newQuantity);
         persist();
