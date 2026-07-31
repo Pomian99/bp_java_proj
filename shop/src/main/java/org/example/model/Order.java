@@ -58,9 +58,7 @@ public class Order implements Serializable {
     }
 
     public BigDecimal getTotal() {
-        BigDecimal itemsTotal = items.stream()
-                .map(OrderItem::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal itemsTotal = OrderItems.total(items);
         return appliedDiscount != null ? itemsTotal.subtract(appliedDiscount.amount()) : itemsTotal;
     }
 

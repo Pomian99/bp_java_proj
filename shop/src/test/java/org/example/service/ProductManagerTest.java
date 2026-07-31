@@ -4,9 +4,10 @@ import org.example.exception.InsufficientStockException;
 import org.example.model.OrderItem;
 import org.example.model.Product;
 import org.example.model.ProductType;
-import org.example.model.discount.AdjustmentType;
 import org.example.model.discount.AppliedDiscount;
 import org.example.model.discount.Discount;
+import org.example.model.discount.FixedAdjustment;
+import org.example.model.discount.PercentageAdjustment;
 import org.example.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,11 +93,11 @@ class ProductManagerTest {
         OrderItem item = new OrderItem(product, List.of(), 1);
 
         Discount smallFixedDiscount = new Discount("10 PLN off", items -> true,
-                AdjustmentType.FIXED, BigDecimal.TEN, Instant.now().plusSeconds(3600));
+                new FixedAdjustment(BigDecimal.TEN), Instant.now().plusSeconds(3600));
         Discount bigPercentageDiscount = new Discount("20% off", items -> true,
-                AdjustmentType.PERCENTAGE, BigDecimal.valueOf(20), Instant.now().plusSeconds(3600));
+                new PercentageAdjustment(BigDecimal.valueOf(20)), Instant.now().plusSeconds(3600));
         Discount expiredDiscount = new Discount("50% off (expired)", items -> true,
-                AdjustmentType.PERCENTAGE, BigDecimal.valueOf(50), Instant.now().minusSeconds(1));
+                new PercentageAdjustment(BigDecimal.valueOf(50)), Instant.now().minusSeconds(1));
 
         manager.addDiscount(smallFixedDiscount);
         manager.addDiscount(bigPercentageDiscount);

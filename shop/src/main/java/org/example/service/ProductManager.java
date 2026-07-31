@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.exception.InsufficientStockException;
 import org.example.exception.NegativePriceException;
 import org.example.model.OrderItem;
+import org.example.model.OrderItems;
 import org.example.model.Product;
 import org.example.model.discount.AppliedDiscount;
 import org.example.model.discount.Discount;
@@ -48,9 +49,7 @@ public class ProductManager {
      * skipped with a console message instead of being applied.
      */
     public synchronized Optional<AppliedDiscount> getBestDiscount(List<OrderItem> items) {
-        BigDecimal itemsTotal = items.stream()
-                .map(OrderItem::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal itemsTotal = OrderItems.total(items);
 
         AppliedDiscount best = null;
         BigDecimal bestResultingTotal = null;

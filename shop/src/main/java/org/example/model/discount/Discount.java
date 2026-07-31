@@ -17,16 +17,14 @@ import java.util.function.Predicate;
 public class Discount {
     private final String description;
     private final Predicate<List<OrderItem>> condition;
-    private final AdjustmentType type;
-    private final BigDecimal value;
+    private final AdjustmentStrategy adjustment;
     private final Instant expiresAt;
 
-    public Discount(String description, Predicate<List<OrderItem>> condition, AdjustmentType type,
-                     BigDecimal value, Instant expiresAt) {
+    public Discount(String description, Predicate<List<OrderItem>> condition, AdjustmentStrategy adjustment,
+                     Instant expiresAt) {
         this.description = description;
         this.condition = condition;
-        this.type = type;
-        this.value = value;
+        this.adjustment = adjustment;
         this.expiresAt = expiresAt;
     }
 
@@ -35,8 +33,6 @@ public class Discount {
     }
 
     public BigDecimal reduce(BigDecimal base) {
-        return type == AdjustmentType.PERCENTAGE
-                ? base.multiply(value).divide(BigDecimal.valueOf(100))
-                : value;
+        return adjustment.apply(base);
     }
 }

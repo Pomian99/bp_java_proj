@@ -45,9 +45,7 @@ public class Cart {
     }
 
     public BigDecimal getTotal() {
-        return items.stream()
-                .map(OrderItem::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return OrderItems.total(items);
     }
 
     public boolean isEmpty() {

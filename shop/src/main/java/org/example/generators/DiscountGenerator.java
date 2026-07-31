@@ -1,9 +1,11 @@
 package org.example.generators;
 
 import org.example.model.OrderItem;
+import org.example.model.OrderItems;
 import org.example.model.ProductType;
-import org.example.model.discount.AdjustmentType;
 import org.example.model.discount.Discount;
+import org.example.model.discount.FixedAdjustment;
+import org.example.model.discount.PercentageAdjustment;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -25,35 +27,26 @@ public final class DiscountGenerator {
 
         discounts.add(new Discount(
                 "10% off orders over 1000 PLN",
-                items -> cartTotal(items).compareTo(new BigDecimal("1000")) >= 0,
-                AdjustmentType.PERCENTAGE,
-                new BigDecimal("10"),
+                items -> OrderItems.total(items).compareTo(new BigDecimal("1000")) >= 0,
+                new PercentageAdjustment(new BigDecimal("10")),
                 oneYearFromNow
         ));
 
         discounts.add(new Discount(
                 "50 PLN off orders over 2000 PLN",
-                items -> cartTotal(items).compareTo(new BigDecimal("2000")) >= 0,
-                AdjustmentType.FIXED,
-                new BigDecimal("50"),
+                items -> OrderItems.total(items).compareTo(new BigDecimal("2000")) >= 0,
+                new FixedAdjustment(new BigDecimal("50")),
                 oneYearFromNow
         ));
 
         discounts.add(new Discount(
                 "15% off when buying at least 2 smartphones",
                 items -> quantityOfType(items, ProductType.SMARTPHONE) >= 2,
-                AdjustmentType.PERCENTAGE,
-                new BigDecimal("15"),
+                new PercentageAdjustment(new BigDecimal("15")),
                 oneYearFromNow
         ));
 
         return discounts;
-    }
-
-    private static BigDecimal cartTotal(List<OrderItem> items) {
-        return items.stream()
-                .map(OrderItem::getLineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private static int quantityOfType(List<OrderItem> items, ProductType type) {
