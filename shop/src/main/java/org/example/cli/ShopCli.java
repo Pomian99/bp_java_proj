@@ -2,6 +2,7 @@ package org.example.cli;
 
 import org.example.model.Cart;
 import org.example.model.discount.Discount;
+import org.example.service.DiscountManager;
 import org.example.service.OrderProcessor;
 import org.example.service.ProductManager;
 
@@ -14,17 +15,17 @@ public class ShopCli {
     private static final DateTimeFormatter EXPIRY_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final Scanner scanner;
-    private final ProductManager productManager;
+    private final DiscountManager discountManager;
     private final ProductBrowser productBrowser;
     private final CartMenu cartMenu;
 
-    public ShopCli(ProductManager productManager, OrderProcessor orderProcessor, Scanner scanner) {
+    public ShopCli(ProductManager productManager, DiscountManager discountManager, OrderProcessor orderProcessor, Scanner scanner) {
         this.scanner = scanner;
-        this.productManager = productManager;
+        this.discountManager = discountManager;
 
         Cart cart = new Cart();
-        CheckoutFlow checkoutFlow = new CheckoutFlow(cart, productManager, orderProcessor, scanner);
-        this.cartMenu = new CartMenu(productManager, cart, scanner, checkoutFlow);
+        CheckoutFlow checkoutFlow = new CheckoutFlow(cart, discountManager, orderProcessor, scanner);
+        this.cartMenu = new CartMenu(productManager, discountManager, cart, scanner, checkoutFlow);
         this.productBrowser = new ProductBrowser(productManager, cartMenu, scanner);
     }
 
@@ -59,7 +60,7 @@ public class ShopCli {
     }
 
     private void viewDiscounts() {
-        List<Discount> discounts = productManager.getActiveDiscounts();
+        List<Discount> discounts = discountManager.getActiveDiscounts();
 
         System.out.print("""
 

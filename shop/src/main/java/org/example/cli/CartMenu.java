@@ -6,6 +6,7 @@ import org.example.model.OrderItem;
 import org.example.model.Product;
 import org.example.model.ConfigType;
 import org.example.model.discount.AppliedDiscount;
+import org.example.service.DiscountManager;
 import org.example.service.ProductManager;
 
 import java.math.BigDecimal;
@@ -19,12 +20,14 @@ import java.util.stream.Collectors;
 
 class CartMenu {
     private final ProductManager productManager;
+    private final DiscountManager discountManager;
     private final Cart cart;
     private final Scanner scanner;
     private final CheckoutFlow checkoutFlow;
 
-    CartMenu(ProductManager productManager, Cart cart, Scanner scanner, CheckoutFlow checkoutFlow) {
+    CartMenu(ProductManager productManager, DiscountManager discountManager, Cart cart, Scanner scanner, CheckoutFlow checkoutFlow) {
         this.productManager = productManager;
+        this.discountManager = discountManager;
         this.cart = cart;
         this.scanner = scanner;
         this.checkoutFlow = checkoutFlow;
@@ -80,7 +83,7 @@ class CartMenu {
         }
 
         BigDecimal subtotal = cart.getTotal();
-        Optional<AppliedDiscount> discount = productManager.getBestDiscount(items);
+        Optional<AppliedDiscount> discount = discountManager.getBestDiscount(items);
         discount.ifPresent(applied -> System.out.printf("%nDiscount: %-20s -%s PLN%n",
                 applied.description(), CliUtils.formatPrice(applied.amount())));
 

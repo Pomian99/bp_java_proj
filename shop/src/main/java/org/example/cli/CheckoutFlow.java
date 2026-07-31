@@ -6,8 +6,8 @@ import org.example.model.Customer;
 import org.example.model.Order;
 import org.example.model.OrderItem;
 import org.example.model.discount.AppliedDiscount;
+import org.example.service.DiscountManager;
 import org.example.service.OrderProcessor;
-import org.example.service.ProductManager;
 
 import java.util.List;
 import java.util.Scanner;
@@ -15,13 +15,13 @@ import java.util.concurrent.CompletionException;
 
 class CheckoutFlow {
     private final Cart cart;
-    private final ProductManager productManager;
+    private final DiscountManager discountManager;
     private final OrderProcessor orderProcessor;
     private final Scanner scanner;
 
-    CheckoutFlow(Cart cart, ProductManager productManager, OrderProcessor orderProcessor, Scanner scanner) {
+    CheckoutFlow(Cart cart, DiscountManager discountManager, OrderProcessor orderProcessor, Scanner scanner) {
         this.cart = cart;
-        this.productManager = productManager;
+        this.discountManager = discountManager;
         this.orderProcessor = orderProcessor;
         this.scanner = scanner;
     }
@@ -35,7 +35,7 @@ class CheckoutFlow {
         Customer customer = readCustomer();
 
         List<OrderItem> items = cart.viewCart();
-        AppliedDiscount appliedDiscount = productManager.getBestDiscount(items).orElse(null);
+        AppliedDiscount appliedDiscount = discountManager.getBestDiscount(items).orElse(null);
         Order order = new Order(customer, items, appliedDiscount);
 
         try {

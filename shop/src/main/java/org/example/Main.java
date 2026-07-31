@@ -7,6 +7,7 @@ import org.example.repository.FileOrderRepository;
 import org.example.repository.FileProductRepository;
 import org.example.repository.OrderRepository;
 import org.example.repository.ProductRepository;
+import org.example.service.DiscountManager;
 import org.example.service.OrderProcessor;
 import org.example.service.ProductManager;
 
@@ -18,7 +19,7 @@ public class Main {
         ShopServices services = initializeShopServices(Path.of("shop-data"));
 
         try (Scanner scanner = new Scanner(System.in)) {
-            new ShopCli(services.productManager(), services.orderProcessor(), scanner).run();
+            new ShopCli(services.productManager(), services.discountManager(), services.orderProcessor(), scanner).run();
         } finally {
             services.orderProcessor().shutdown();
         }
@@ -36,13 +37,14 @@ public class Main {
             System.out.println("Loaded persisted products from " + dataDir.resolve("products.dat"));
         }
 
-        DiscountGenerator.generateDiscounts().forEach(productManager::addDiscount);
+        DiscountManager discountManager = new DiscountManager();
+        DiscountGenerator.generateDiscounts().forEach(discountManager::addDiscount);
 
         OrderProcessor orderProcessor = new OrderProcessor(productManager, orderRepository);
 
-        return new ShopServices(productManager, orderProcessor);
+        return new ShopServices(productManager, discountManager, orderProcessor);
     }
 
-    private record ShopServices(ProductManager productManager, OrderProcessor orderProcessor) {
+    private record ShopServices(ProductManager productManager, DiscountManager discountManager, OrderProcessor orderProcessor) {
     }
 }
